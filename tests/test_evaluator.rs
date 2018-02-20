@@ -13,7 +13,7 @@ fn test_interpret_tree() {
     let d = Expression::Plus(vec![b,g]);
 
     let e = Expression::Plus(vec![a,d]);
-    let result = interpret(&e);
+    let result = evaluate(&e);
     assert_eq!(result.ok(), Some(37));
 }
 

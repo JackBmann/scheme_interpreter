@@ -3,7 +3,7 @@ pub enum Token {
     LParen,
     RParen,
     Oper(char),
-    Constant(Vec<char>),
+    Constant(String),
 }
 
 enum TokenizationState {
@@ -27,6 +27,10 @@ fn get_single_character_token(c: char) -> Token {
         ')'   => Token::RParen,
         _     => Token::Oper(c),
     }
+}
+
+fn get_constant(v: &Vec<char>) -> Token {
+    Token::Constant(v.iter().cloned().collect::<String>())
 }
 
 fn is_whitespace(c: char) -> bool {
@@ -54,18 +58,22 @@ pub fn tokenize(s: &str) -> Vec<Token> {
             TokenizationState::Accumulating => {
                 if is_single_character_token(c) {
                     state = TokenizationState::Starting;
-                    tokens.push(Token::Constant(accumulation.clone()));
+                    tokens.push(get_constant(&accumulation));
                     accumulation.clear();
                     tokens.push(get_single_character_token(c));
                 } else if is_whitespace(c) {
                     state = TokenizationState::Starting;
-                    tokens.push(Token::Constant(accumulation.clone()));
+                    tokens.push(get_constant(&accumulation));
                     accumulation.clear();
                 } else {
                     accumulation.push(c);
                 }
             },
         }
+    }
+    // handle end token, if needed
+    if accumulation.len() > 0 {
+        tokens.push(get_constant(&accumulation));
     }
 
     return tokens;
