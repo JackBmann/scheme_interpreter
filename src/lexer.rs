@@ -1,9 +1,14 @@
 
+pub enum Keyword {
+    Define,
+}
+
 pub enum Token {
     LParen,
     RParen,
     Oper(char),
     Constant(String),
+    Keyword(Keyword),
 }
 
 enum TokenizationState {
@@ -30,7 +35,11 @@ fn get_single_character_token(c: char) -> Token {
 }
 
 fn get_constant(v: &Vec<char>) -> Token {
-    Token::Constant(v.iter().cloned().collect::<String>())
+    let s = v.iter().cloned().collect::<String>();
+    if s == "define" {
+        return Token::Keyword(Keyword::Define);
+    }
+    Token::Constant(s)
 }
 
 fn is_whitespace(c: char) -> bool {

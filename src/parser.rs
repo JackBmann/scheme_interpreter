@@ -1,9 +1,9 @@
 
 use lexer::Token;
 use evaluator::Expression;
+use environment::Environment;
 
-
-fn parse_compound(mut tokens: &mut Vec<Token>) -> Expression {
+fn parse_compound(mut tokens: &mut Vec<Token>, environment: &Environment) -> Expression {
 
     // the ONLY possibility is for the first token to be an operator
     let operator = tokens.remove(0);
@@ -17,7 +17,7 @@ fn parse_compound(mut tokens: &mut Vec<Token>) -> Expression {
     loop {
         match tokens.get(0).unwrap() {
             &Token::RParen     => break,
-            _                  => expressions.push(parse(tokens)),
+            _                  => expressions.push(parse(tokens, environment)),
         }
     }
     // after breaking, remove last element
@@ -32,12 +32,22 @@ fn parse_compound(mut tokens: &mut Vec<Token>) -> Expression {
 
 }
 
-pub fn parse(mut tokens: &mut Vec<Token>) -> Expression {
+fn constant_to_expression(s: String, environment: &Environment) -> Expression {
+    for key in environment.variables.keys() {
+        if &s == key {
+            let expr = environment.variables.get(key).unwrap();
+            return expr.clone();
+        }
+    }
+    return Expression::Number(s.parse::<i32>().unwrap());
+}
+
+pub fn parse(mut tokens: &mut Vec<Token>, environment: &Environment) -> Expression {
     // if integer, return integer
     let tok = tokens.remove(0);
     match tok {
-        Token::Constant(s) => Expression::Number(s.parse::<i32>().unwrap()),
-        Token::LParen      => parse_compound(tokens),
+        Token::Constant(s) => constant_to_expression(s, environment),
+        Token::LParen      => parse_compound(tokens, environment),
         _ => panic!(),
     }
 

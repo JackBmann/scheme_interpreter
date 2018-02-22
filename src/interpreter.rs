@@ -5,6 +5,7 @@ use parser::*;
 use lexer::*;
 use environment::*;
 use environment_parser::*;
+use std::collections::HashMap;
 
 pub fn interpret_with_environment(s:String, e: Environment) -> i32 {
 
@@ -15,7 +16,7 @@ pub fn interpret_with_environment(s:String, e: Environment) -> i32 {
     // be done by the parser, not with string replacement
     let mut s = s;
     for key in e.variables.keys() {
-        s = s.replace(key,e.variables.get(key).unwrap());
+        //s = s.replace(key,e.variables.get(key).unwrap());
     }
     interpret(s)
 
@@ -23,7 +24,7 @@ pub fn interpret_with_environment(s:String, e: Environment) -> i32 {
 
 fn replace_from_environment(s:String, e:&Environment) -> String {
     for key in e.variables.keys() {
-        if key == &s { return e.variables.get(key).unwrap().to_string(); }
+ //       if key == &s { return e.variables.get(key).unwrap().to_string(); }
     }
     return s;
 }
@@ -33,11 +34,11 @@ pub fn interpret_with_environment_2(s:String, e: Environment) -> i32 {
     let mut tokens = Vec::<Token>::new();
     for token in original_tokens {
         match token {
-            Token::Constant(a) => tokens.push(Token::Constant(replace_from_environment(a,&e))),
+//            Token::Constant(a) => tokens.push(Token::Constant(replace_from_environment(a,&e))),
             _ => tokens.push(token),
         }
     }
-    let expression = parse(&mut tokens);
+    let expression = parse(&mut tokens, &e);
     let result = evaluate(&expression);
     return result.unwrap();
 }
@@ -50,8 +51,10 @@ pub fn interpret_with_environment_string(s:String, e:String) -> i32 {
 
 pub fn interpret(s: String) -> i32 {
 
+    let hash: HashMap<String, Expression> = HashMap::new();
+    let env = Environment { variables: hash };
     let mut tokens = tokenize(&s);
-    let expression = parse(&mut tokens);
+    let expression = parse(&mut tokens, &env);
     let result = evaluate(&expression);
     return result.unwrap();
 

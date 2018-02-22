@@ -1,3 +1,4 @@
+#[derive(Clone)]
 pub enum Expression {
     Number(i32),
     Plus(Vec<Expression>),

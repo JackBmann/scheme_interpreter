@@ -29,16 +29,16 @@ fn test_multiple_parens() {
     assert_eq!(val, 5265);
 }
 
-#[test]
-fn test_with_environment() {
-    let mut hash: HashMap<String,String> = HashMap::new();
-    hash.insert(String::from("a"), String::from("5"));
-    let e = Environment {
-        variables: hash,
-    };
-    let val = interpret_with_environment_2(String::from("(+ a 5)"), e);
-    assert_eq!(val, 10);
-}
+//#[test]
+//fn test_with_environment() {
+//    let mut hash: HashMap<String,String> = HashMap::new();
+//    hash.insert(String::from("a"), String::from("5"));
+//    let e = Environment {
+//        variables: hash,
+//    };
+//    let val = interpret_with_environment_2(String::from("(+ a 5)"), e);
+//    assert_eq!(val, 10);
+//}
 
 #[test]
 fn test_with_environment_string() {
@@ -53,7 +53,7 @@ fn test_with_environment_string() {
 #[test]
 fn test_with_multiple_variable_string() {
 
-    let env = String::from("(define (x 5)) (define (y 6))");
+    let env = String::from("(define (x (+ 3 2))) (define (y 6))");
     let expr = String::from("(* x y)");
     let val = interpret_with_environment_string(expr, env);
     assert_eq!(val, 30);
