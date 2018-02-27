@@ -34,7 +34,7 @@ fn get_single_character_token(c: char) -> Token {
     }
 }
 
-fn get_constant(v: &Vec<char>) -> Token {
+fn get_constant_or_keyword(v: &Vec<char>) -> Token {
     let s = v.iter().cloned().collect::<String>();
     if s == "define" {
         return Token::Keyword(Keyword::Define);
@@ -67,12 +67,12 @@ pub fn tokenize(s: &str) -> Vec<Token> {
             TokenizationState::Accumulating => {
                 if is_single_character_token(c) {
                     state = TokenizationState::Starting;
-                    tokens.push(get_constant(&accumulation));
+                    tokens.push(get_constant_or_keyword(&accumulation));
                     accumulation.clear();
                     tokens.push(get_single_character_token(c));
                 } else if is_whitespace(c) {
                     state = TokenizationState::Starting;
-                    tokens.push(get_constant(&accumulation));
+                    tokens.push(get_constant_or_keyword(&accumulation));
                     accumulation.clear();
                 } else {
                     accumulation.push(c);
@@ -82,7 +82,7 @@ pub fn tokenize(s: &str) -> Vec<Token> {
     }
     // handle end token, if needed
     if accumulation.len() > 0 {
-        tokens.push(get_constant(&accumulation));
+        tokens.push(get_constant_or_keyword(&accumulation));
     }
 
     return tokens;
