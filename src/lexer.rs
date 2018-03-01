@@ -1,6 +1,7 @@
 
 pub enum Keyword {
     Define,
+    If,
 }
 
 pub enum Token {
@@ -22,6 +23,7 @@ fn is_single_character_token(c: char) -> bool {
         ')'   => true,
         '+'   => true,
         '*'   => true,
+        '>'   => true,
         _     => false,
     }
 }
@@ -39,7 +41,10 @@ fn get_constant_or_keyword(v: &Vec<char>) -> Token {
     if s == "define" {
         return Token::Keyword(Keyword::Define);
     }
-    Token::Constant(s)
+    if s == "if" {
+        return Token::Keyword(Keyword::If);
+    }
+    return Token::Constant(s);
 }
 
 fn is_whitespace(c: char) -> bool {

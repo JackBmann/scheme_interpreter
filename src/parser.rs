@@ -1,14 +1,55 @@
 
 use lexer::Token;
+use lexer::Keyword;
 use evaluator::Expression;
 use environment::Environment;
+use predicate::Predicate;
+
+fn parse_conditional(mut tokens: &mut Vec<Token>, environment: &Environment) -> Expression {
+
+    // after "if keyword, expect parenthesis
+    match tokens.remove(0) { Token::LParen => {}, _ => panic!("expected left parenthesis")};
+   
+    // after lparen, expect operator
+    let operator = match tokens.remove(0) {
+        Token::Oper(o) => o,
+        _                  => panic!("expected operator in conditional"),
+    };
+
+    // left value & right value
+    let left_val = parse(tokens, environment);
+    let right_val = parse(tokens, environment);
+
+    // after values, right paren
+    match tokens.remove(0) { Token::RParen => {}, _ => panic!("expected right parenthesis") };
+
+    // if true and if false
+    let if_true = parse(tokens, environment);
+    let if_false = parse(tokens, environment);
+
+    // final right parenthesis
+    match tokens.remove(0) { Token::RParen => {}, _ => panic!("expected right parenthesis") };
+
+    let predicate = Predicate {
+        operator: operator,
+        l_hand: left_val,
+        r_hand: right_val,
+        if_true: if_true,
+        if_false: if_false,
+    };
+
+    return Expression::Predicate(Box::new(predicate));
+}
+
 
 fn parse_compound(mut tokens: &mut Vec<Token>, environment: &Environment) -> Expression {
 
-    // the ONLY possibility is for the first token to be an operator
+    // the ONLY possibility is for the first token to be an operator OR keyword
     let operator = tokens.remove(0);
     let c = match operator {
         Token::Oper(o) => o,
+        Token::Keyword(keyword) => match keyword { Keyword::If => {return parse_conditional(tokens, environment)}, _ => panic!("unexpected keyword") },
+
         _              => panic!(),
     };
 

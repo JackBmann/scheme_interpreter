@@ -4,3 +4,4 @@ pub mod parser;
 pub mod interpreter;
 pub mod environment;
 pub mod environment_parser;
+pub mod predicate;
