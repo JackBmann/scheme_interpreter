@@ -9,10 +9,10 @@ fn parse_conditional(mut tokens: &mut Vec<Token>, environment: &Environment) -> 
 
     // after "if keyword, expect parenthesis
     match tokens.remove(0) { Token::LParen => {}, _ => panic!("expected left parenthesis")};
-   
+
     // after lparen, expect operator
     let operator = match tokens.remove(0) {
-        Token::Oper(o) => o,
+        Token::Oper(o) => Token::Oper(o),
         _                  => panic!("expected operator in conditional"),
     };
 
@@ -80,7 +80,7 @@ fn constant_to_expression(s: String, environment: &Environment) -> Expression {
             return expr.clone();
         }
     }
-    return Expression::Number(s.parse::<i32>().unwrap());
+    return Expression::Number(s.parse::<f64>().unwrap());
 }
 
 pub fn parse(mut tokens: &mut Vec<Token>, environment: &Environment) -> Expression {
@@ -93,4 +93,3 @@ pub fn parse(mut tokens: &mut Vec<Token>, environment: &Environment) -> Expressi
     }
 
 }
-

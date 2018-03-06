@@ -6,5 +6,11 @@ pub use updated_scheme::lexer::tokenize;
 #[test]
 fn test_lexer() {
     let x = tokenize("(+ 33(+ 4 5))");
-    assert_eq!(x.len(), 9);		
+    assert_eq!(x.len(), 9);
+}
+
+#[test]
+fn test_lexer_float() {
+    let x = tokenize("(+ 33.0(+ 4.5 5))");
+    assert_eq!(x.len(), 9);
 }

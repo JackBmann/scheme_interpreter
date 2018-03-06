@@ -1,9 +1,10 @@
-
+#[derive(Clone)]
 pub enum Keyword {
     Define,
     If,
 }
 
+#[derive(Clone)]
 pub enum Token {
     LParen,
     RParen,
@@ -24,6 +25,8 @@ fn is_single_character_token(c: char) -> bool {
         '+'   => true,
         '*'   => true,
         '>'   => true,
+        '<'   => true,
+        '='   => true,
         _     => false,
     }
 }
@@ -52,7 +55,7 @@ fn is_whitespace(c: char) -> bool {
 }
 
 pub fn tokenize(s: &str) -> Vec<Token> {
-    
+
     let mut state: TokenizationState = TokenizationState::Starting;
     let mut tokens: Vec<Token> = Vec::<Token>::new();
     let mut accumulation: Vec<char> = Vec::<char>::new();
