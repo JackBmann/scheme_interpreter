@@ -8,9 +8,18 @@ pub enum Keyword {
 pub enum Token {
     LParen,
     RParen,
-    Oper(char),
+    Oper(Operator),
     Constant(String),
     Keyword(Keyword),
+}
+
+#[derive(Clone)]
+pub enum Operator {
+    GreaterThan,
+    LessThan,
+    Equal,
+    Mult,
+    Plus,
 }
 
 enum TokenizationState {
@@ -31,11 +40,21 @@ fn is_single_character_token(c: char) -> bool {
     }
 }
 
+fn get_operator(c: char) -> Operator {
+    match c {
+        '+'   => Operator::Plus,
+        '*'   => Operator::Mult,
+        '>'   => Operator::GreaterThan,
+        '<'   => Operator::LessThan,
+        _   => Operator::Equal,
+    }
+}
+
 fn get_single_character_token(c: char) -> Token {
     match c {
         '('   => Token::LParen,
         ')'   => Token::RParen,
-        _     => Token::Oper(c),
+        _     => Token::Oper(get_operator(c)),
     }
 }
 

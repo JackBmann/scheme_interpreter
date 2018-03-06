@@ -1,5 +1,6 @@
 
 use lexer::Token;
+use lexer::Operator;
 use lexer::Keyword;
 use evaluator::Expression;
 use environment::Environment;
@@ -12,7 +13,7 @@ fn parse_conditional(mut tokens: &mut Vec<Token>, environment: &Environment) -> 
 
     // after lparen, expect operator
     let operator = match tokens.remove(0) {
-        Token::Oper(o) => Token::Oper(o),
+        Token::Oper(o) => o,
         _                  => panic!("expected operator in conditional"),
     };
 
@@ -66,8 +67,8 @@ fn parse_compound(mut tokens: &mut Vec<Token>, environment: &Environment) -> Exp
 
     // create a token, must be + or *
     match c {
-        '+'  => Expression::Plus(expressions),
-        '*'  => Expression::Mult(expressions),
+        Operator::Plus  => Expression::Plus(expressions),
+        Operator::Mult  => Expression::Mult(expressions),
         _    => panic!(),
     }
 

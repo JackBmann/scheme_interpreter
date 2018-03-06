@@ -1,11 +1,10 @@
-
-use lexer::Token;
+use lexer::Operator;
 use evaluator::Expression;
 use evaluator::evaluate;
 
 #[derive(Clone)]
 pub struct Predicate {
-    pub operator: Token,
+    pub operator: Operator,
     pub l_hand: Expression,
     pub r_hand: Expression,
     pub if_true: Expression,
@@ -18,12 +17,12 @@ impl Predicate {
         let l_val = evaluate(&self.l_hand).ok().unwrap();
         let r_val = evaluate(&self.r_hand).ok().unwrap();
         match self.operator {
-            Token::Oper('>') => if l_val > r_val  { return self.if_true.clone() } else { return self.if_false.clone() },
-            Token::Oper('<') => if l_val < r_val  { return self.if_true.clone() } else { return self.if_false.clone() },
-            Token::Oper('=') => if l_val == r_val  { return self.if_true.clone() } else { return self.if_false.clone() },
+            Operator::GreaterThan => if l_val > r_val  { return self.if_true.clone() } else { return self.if_false.clone() },
+            Operator::LessThan => if l_val < r_val  { return self.if_true.clone() } else { return self.if_false.clone() },
+            Operator::Equal => if l_val == r_val  { return self.if_true.clone() } else { return self.if_false.clone() },
             _ => panic!("unknown operator in predicate")
         }
-        return self.if_true.clone();
+        // return self.if_true.clone();
     }
 
 }
